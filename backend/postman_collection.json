@@ -1,0 +1,101 @@
+{
+  "info": {
+    "name": "PillowFort API",
+    "_postman_id": "pillowfort-api",
+    "description": "API collection for PillowFort backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Available Funds (Public)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/funds",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "funds"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Investment (Protected)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{FIREBASE_TOKEN}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fundId\": \"equities-fund\",\n  \"amount\": 25000\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/investments",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "investments"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Investments by User (Protected)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{FIREBASE_TOKEN}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/investments/{{USER_ID}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "investments",
+            "{{USER_ID}}"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "FIREBASE_TOKEN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "USER_ID",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
