@@ -12,8 +12,8 @@ import {
   TextField,
   DialogActions,
 } from "@mui/material";
-import { useInvestments } from "./context/InvestmentProvider";
-import { useAuth } from "./context/AuthProvider";
+import { useInvestments } from "../context/InvestmentProvider";
+import { useAuth } from "../context/AuthProvider";
 
 export default function Funds() {
   const { funds, refreshInvestments, investInFund } = useInvestments();

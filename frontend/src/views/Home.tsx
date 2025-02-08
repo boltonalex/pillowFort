@@ -2,7 +2,7 @@ import Hero from "../components/Hero";
 import ProductBenefitsList from "../components/ProductBenefitsList";
 import CautionText from "../components/CautionText";
 import CTA from "../components/CTA";
-import FundsCard from "../components/FundsCard";
+import FundsCard from "../components/HomeFundsCard";
 
 
 export default function Home() {

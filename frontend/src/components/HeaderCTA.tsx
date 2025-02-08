@@ -6,11 +6,7 @@ import { useLocation } from "react-router";
 
 const HeaderCTA = () => {
   const { user } = useAuth();
-
-  const location = useLocation()
-
-  console.log(location.pathname.includes('funds'))
-
+  const location = useLocation();
 
   return (
     <div className='flex p-4 gap-2'>
