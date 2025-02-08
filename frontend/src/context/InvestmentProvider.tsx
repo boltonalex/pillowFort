@@ -1,39 +1,13 @@
-import { createContext, useState, useEffect, useContext, ReactNode, useCallback } from "react";
-import { useAuth } from "./AuthProvider"; // Assuming you have an Auth context
-
-// Define types
-interface Investment {
-  id: string;
-  userId: string;
-  fundId: string;
-  amount: number;
-  createdAt: string;
-}
-
-interface Fund {
-  id: string;
-  name: string;
-  description: string;
-  currency: string;
-  minimum: number;
-}
-
-interface InvestmentContextProps {
-  funds: Fund[];
-  investments: Investment[];
-  refreshInvestments: () => void;
-  refreshFunds: () => void;
-  investInFund: (fundId: string, amount: number) => Promise<void>;
-}
-
-const InvestmentContext = createContext<InvestmentContextProps | undefined>(undefined);
+import { useState, useEffect, ReactNode, useCallback } from "react";
+import { useAuth } from "./useAuth";
+import { InvestmentContext } from "./InvestmentContext"; // Import the separate InvestmentContext
+import { Fund, Investment } from "../types";
 
 export function InvestmentProvider({ children }: { children: ReactNode }) {
   const { user, token } = useAuth();
   const [funds, setFunds] = useState<Fund[]>([]);
   const [investments, setInvestments] = useState<Investment[]>([]);
 
-  // Fetch Funds
   const refreshFunds = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/funds", {
@@ -52,7 +26,6 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Fetch Investments for the logged-in user
   const refreshInvestments = useCallback(async () => {
     if (!user || !token) return;
 
@@ -61,7 +34,7 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Ensure authenticated request
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -76,7 +49,6 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
     }
   }, [token, user]);
 
-  // Function to handle investing in a fund
   const investInFund = async (fundId: string, amount: number) => {
     if (!user || !token) {
       console.error("Investment attempt without authentication.");
@@ -126,13 +98,4 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
       {children}
     </InvestmentContext.Provider>
   );
-}
-
-// Custom hook to use the context
-export function useInvestments() {
-  const context = useContext(InvestmentContext);
-  if (!context) {
-    throw new Error("useInvestments must be used within an InvestmentProvider");
-  }
-  return context;
 }

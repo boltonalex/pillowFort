@@ -7,7 +7,8 @@ const usersCollection = db.collection("users");
 
 
 const makeNewUserDoc = async (userId) => {
-  const newUser = await usersCollection.add({
+  const userRef = usersCollection.doc(userId); // ✅ Specify document ID
+  await userRef.set({
     userId,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     address: null,
@@ -17,7 +18,7 @@ const makeNewUserDoc = async (userId) => {
     idUploaded: false,
     kycVerified: false,
   });
-  return newUser;
+  return (await userRef.get()).data();
 }
 
 router.get("/:userId", authMiddleware, async (req, res) => {
@@ -25,58 +26,17 @@ router.get("/:userId", authMiddleware, async (req, res) => {
     const { userId } = req.params;
     const userRef = usersCollection.doc(userId);
     const userSnap = await userRef.get();
-    if (!userSnap) {
+    console.log('userSnap.exists', userSnap.exists)
+    if (!userSnap.exists) {
       const newUser = await makeNewUserDoc(userId);
       return res.status(201).json(newUser);
     }
-    res.json(userSnap.data());
+    return res.json(userSnap.data());
 
   } catch (error) {
     console.error("❌ Firestore Error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-// router.patch("/:userId", authMiddleware, async (req, res) => {
-// try {
-// console.log('patch user')
-// const { userId } = req.params;
-// const { providerData } = req.body;
-
-// const snapshot = await usersCollection.where("userId", "==", userId).get();
-
-// //if there is no user, add all the data into a new one
-// if (snapshot.empty) {
-//   const newUser = await usersCollection.add({
-//     userId,
-//     createdAt: admin.firestore.FieldValue.serverTimestamp(),
-//     address: null,
-//     dob: null,
-//     email: providerData.email, //TODO: fetch from SSO or userData
-//     name: providerData.displayName,
-//     idUploaded: false,
-//     kycVerified: false,
-//   });
-//   return res.status(201).json(newUser);
-// }
-// console.log({ snapshot })
-
-
-
-// const updatedUser = await snapshot.updateDoc({
-//   // ...doc,
-//   email: providerData.email,
-//   name: providerData.displayName,
-// })
-// return res.status(201).json(updatedUser);
-//   } catch (error) {
-//     console.error("❌ Firestore Error:", error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
-
-
-
-
 
 module.exports = router;

@@ -1,113 +1,70 @@
-import { useState } from "react";
-import {
-  List,
-  ListItem,
-  ListItemText,
-  CircularProgress,
-  Typography,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-} from "@mui/material";
-import { useInvestments } from "../context/InvestmentProvider";
-import { useAuth } from "../context/AuthProvider";
+import { useState, useEffect, useMemo } from "react";
+import { useInvestments } from "../context/useInvestments";
+import { useAuth } from "../context/useAuth";
+import InvestmentForm from "./InvestmentForm";
+import UserInvestments from "./UserInvestments";
+import AvailableFunds from "./AvailableFunds"; // ✅ Import new component
+import { Fund } from "../types";
 
 export default function Funds() {
-  const { funds, refreshInvestments, investInFund } = useInvestments();
-  const { user, token, userData, setIsKYCOpen } = useAuth();
+  const { funds, refreshInvestments, investInFund, investments } = useInvestments();
+  const { user, token } = useAuth();
   const [isInvesting, setIsInvesting] = useState(false);
   const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
-  const [investmentAmount, setInvestmentAmount] = useState<number>(0);
+  const [investmentSum, setInvestmentSum] = useState<number>(0);
 
-  // 💰 Handle investment submission
-  const handleInvest = async () => {
-    if (!selectedFund || !investmentAmount || !user || !token) return;
+  useEffect(() => {
+    if (investments && investments.length > 0) {
+      const totalInvestment = investments.reduce((acc, curr) => acc + curr.amount, 0);
+      setInvestmentSum(totalInvestment);
+    } else {
+      setInvestmentSum(0);
+    }
+  }, [user, investments]);
+
+  const groupedInvestments = useMemo(() => {
+    if (!investments || investments.length === 0) return {};
+
+    return investments.reduce<{ [key: string]: number }>((acc, inv) => {
+      acc[inv.fundId] = (acc[inv.fundId] || 0) + inv.amount;
+      return acc;
+    }, {});
+  }, [investments]);
+
+  const handleInvest = async (amount: number) => {
+    if (!selectedFund || !user || !token) return;
 
     try {
-      await investInFund(selectedFund.id, investmentAmount);
+      await investInFund(selectedFund.id, amount);
       setIsInvesting(false);
-      alert(`Successfully invested £${investmentAmount} in ${selectedFund.name}`);
-      setInvestmentAmount(0);
-      refreshInvestments(); // Refresh investments after investment
+      refreshInvestments();
     } catch (error) {
       console.error("Investment failed:", error);
-      alert("Failed to process investment. Please try again.");
     }
   };
 
   return (
-    <div>
-      <Typography variant="h6">Available Investment Funds</Typography>
-      {funds.length === 0 ? <CircularProgress /> : null}
-      <List>
-        {funds?.map((fund) => (
-          <ListItem key={fund.id}>
-            <ListItemText
-              primary={fund.name}
-              secondary={`${fund.description} - Minimum: £${fund.minimum}`}
-            />
-            {/* TODO: check on isKycVerified value before allowing users to click invest... */}
-            {!user ? (
-              <Button variant="outlined" disabled>
-                Login to Invest
-              </Button>
-            ) : (userData && userData?.kycVerified) ? (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  setSelectedFund(fund);
-                  setIsInvesting(true);
-                }}
-              >
-                Invest
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  setSelectedFund(fund);
-                  setIsKYCOpen(true);
-                }}
-              >
-                Complete KYC
-              </Button>
-            )}
-          </ListItem>
-        ))}
-      </List>
+    <div className="">
+      {user && investmentSum > 0 && (
+        <div className="bg-pink-500 text-white p-8 text-center relative">
+          <h2 className="text-2xl font-semibold">Total Investments</h2>
+          <p className="text-5xl font-bold mt-2">{`£${investmentSum}`}</p>
+        </div>
+      )}
 
-      {/* 💰 Investment Form (Modal) */}
-      <Dialog open={isInvesting && selectedFund !== null} onClose={() => setIsInvesting(false)}>
-        <DialogTitle>Invest in {selectedFund?.name}</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Investment Amount (£)"
-            type="number"
-            fullWidth
-            margin="dense"
-            value={investmentAmount}
-            onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsInvesting(false)}>Cancel</Button>
-          <Button
-            onClick={handleInvest}
-            variant="contained"
-            color="primary"
-            disabled={investmentAmount < (selectedFund?.minimum || 0)}
-          >
-            {investmentAmount !== 0 && investmentAmount < (selectedFund?.minimum || 0)
-              ? `Must be more than £${selectedFund!.minimum}`
-              : "Confirm Investment"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <div className="bg-gray-100 p-6 rounded-b-3xl shadow-lg flex">
+        <AvailableFunds funds={funds} setSelectedFund={setSelectedFund} setIsInvesting={setIsInvesting} />
+        <div className="w-[5px] bg-pink-500 mx-6 rounded-3xl"></div>
+        <UserInvestments groupedInvestments={groupedInvestments} />
+      </div>
+
+      {isInvesting && selectedFund && (
+        <InvestmentForm
+          selectedFund={selectedFund}
+          onClose={() => setIsInvesting(false)}
+          onInvest={handleInvest}
+        />
+      )}
     </div>
   );
 }

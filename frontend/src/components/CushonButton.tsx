@@ -1,6 +1,13 @@
 import { useNavigate } from "react-router";
 
-const CushonButton = ({ children, variant = 'pink', clickTarget }) => {
+interface CushonButtonProps {
+  children: React.ReactNode;
+  variant?: "pink" | "white";
+  clickTarget: string;
+}
+
+
+const CushonButton: React.FC<CushonButtonProps> = ({ children, variant = 'pink', clickTarget }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {

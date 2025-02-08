@@ -112,4 +112,11 @@ and maintainability. •	Implement end-to-end testing for API reliability.
 
 ## **Frontend design choices
 
--- similar font instead of Museo Sans for simplicity
+- similar font instead of Museo Sans for simplicity
+- funds list should be calculating the delta over time, not just a simple
+  display of invested money
+- design system not tailwind in all the components
+- two part KYC to accomodate SSO
+- if a user signs up with an email and pw, we should store that email in the
+  users collection for when they complete KYC to avoid them using a differet
+  email

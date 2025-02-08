@@ -1,5 +1,5 @@
-import LoginModal from "./LoginModal";
-import KYCForm from "./KYCForm";
+import LoginModal from "./components/LoginModal";
+import KYCForm from "./components/KYCForm";
 import { InvestmentProvider } from "./context/InvestmentProvider";
 import { AuthProvider } from "./context/AuthProvider";
 import Header from "./components/Header";
