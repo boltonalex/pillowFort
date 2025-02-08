@@ -1,47 +1,82 @@
 const express = require("express");
 const router = express.Router();
-const { getAuth } = require("firebase-admin/auth");
-const admin = require("../firebase");
+const { admin, db } = require("../config/firebase");
+const authMiddleware = require("../middlewares/authMiddleware"); // Ensure auth middleware is imported
 
-// ✅ Sign in with email & password
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+const usersCollection = db.collection("users");
 
+
+const makeNewUserDoc = async (userId) => {
+  const newUser = await usersCollection.add({
+    userId,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    address: null,
+    dob: null,
+    email: null,
+    name: null,
+    idUploaded: false,
+    kycVerified: false,
+  });
+  return newUser;
+}
+
+router.get("/:userId", authMiddleware, async (req, res) => {
   try {
-    const user = await admin.auth().getUserByEmail(email);
-    const token = await admin.auth().createCustomToken(user.uid);
-    res.json({ token, userId: user.uid });
+    const { userId } = req.params;
+    const userRef = usersCollection.doc(userId);
+    const userSnap = await userRef.get();
+    if (!userSnap) {
+      const newUser = await makeNewUserDoc(userId);
+      return res.status(201).json(newUser);
+    }
+    res.json(userSnap.data());
+
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(401).json({ error: "Invalid credentials" });
+    console.error("❌ Firestore Error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// ✅ Sign up with email & password
-router.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
+// router.patch("/:userId", authMiddleware, async (req, res) => {
+// try {
+// console.log('patch user')
+// const { userId } = req.params;
+// const { providerData } = req.body;
 
-  try {
-    const user = await admin.auth().createUser({ email, password });
-    const token = await admin.auth().createCustomToken(user.uid);
-    res.json({ token, userId: user.uid });
-  } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
+// const snapshot = await usersCollection.where("userId", "==", userId).get();
 
-// ✅ Verify Firebase ID Token (Middleware)
-router.post("/verify", async (req, res) => {
-  const { token } = req.body;
+// //if there is no user, add all the data into a new one
+// if (snapshot.empty) {
+//   const newUser = await usersCollection.add({
+//     userId,
+//     createdAt: admin.firestore.FieldValue.serverTimestamp(),
+//     address: null,
+//     dob: null,
+//     email: providerData.email, //TODO: fetch from SSO or userData
+//     name: providerData.displayName,
+//     idUploaded: false,
+//     kycVerified: false,
+//   });
+//   return res.status(201).json(newUser);
+// }
+// console.log({ snapshot })
 
-  try {
-    const decodedToken = await getAuth().verifyIdToken(token);
-    res.json({ userId: decodedToken.uid });
-  } catch (error) {
-    console.error("Token verification error:", error);
-    res.status(403).json({ error: "Unauthorized" });
-  }
-});
+
+
+// const updatedUser = await snapshot.updateDoc({
+//   // ...doc,
+//   email: providerData.email,
+//   name: providerData.displayName,
+// })
+// return res.status(201).json(updatedUser);
+//   } catch (error) {
+//     console.error("❌ Firestore Error:", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
+
+
+
 
 module.exports = router;

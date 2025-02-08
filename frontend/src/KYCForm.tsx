@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions, CircularProgress, Typography } from "@mui/material";
-import { db } from "./firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { useAuth } from "./context/AuthProvider";
 
-interface KYCFormProps {
-  userId: string;
-  open: boolean;
-  onClose: () => void;
-  onKYCComplete: () => void;
-}
+export default function KYCForm() {
+  const { user,
+    isKYCOpen,
+    setIsKYCOpen,
+    isKycVerified,
+    updateKYC
+  } = useAuth();
 
-export default function KYCForm({ userId, open, onClose, onKYCComplete }: KYCFormProps) {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
   const [address, setAddress] = useState("");
   const [idFile, setIdFile] = useState<File | null>(null);
@@ -25,13 +25,9 @@ export default function KYCForm({ userId, open, onClose, onKYCComplete }: KYCFor
     }
   };
 
-  // 🔹 Handle KYC Submission
+  // 🔹 Handle KYC Submission via API
   const handleSubmit = async () => {
-    if (!name
-      || !dob
-      || !address
-      //  || !idFile
-    ) {
+    if (!name || !dob || !address) {
       setError("All fields are required.");
       return;
     }
@@ -40,27 +36,27 @@ export default function KYCForm({ userId, open, onClose, onKYCComplete }: KYCFor
     setError(null);
 
     try {
-      // 🔍 Save KYC details in Firestore (without file upload for now)
-      await setDoc(doc(db, "users", userId), {
-        kycVerified: true,
-        name,
-        dob,
-        address,
-        idUploaded: true, // We mark that an ID was uploaded, file handling to be implemented separately
-      }, { merge: true });
+      const formData = new FormData();
+      formData.append("user", user);
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("dob", dob);
+      formData.append("address", address);
+      if (idFile) {
+        formData.append("idFile", idFile);
+      }
 
-      onKYCComplete(); // ✅ Notify the app that KYC is complete
-      onClose();
+      await updateKYC(Object.fromEntries(formData.entries()));
+
     } catch (error) {
       console.error("KYC Submission Failed:", error);
       setError("Failed to submit KYC. Please try again.");
     }
-
     setLoading(false);
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={isKYCOpen} onClose={() => setIsKYCOpen(false)}>
       <DialogTitle>KYC Verification</DialogTitle>
       <DialogContent>
         <Typography>Please fill out your details to verify your identity.</Typography>
@@ -72,6 +68,14 @@ export default function KYCForm({ userId, open, onClose, onKYCComplete }: KYCFor
           margin="dense"
           value={name}
           onChange={(e) => setName(e.target.value)}
+        />
+
+        <TextField
+          label="Email"
+          fullWidth
+          margin="dense"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <TextField
@@ -97,11 +101,11 @@ export default function KYCForm({ userId, open, onClose, onKYCComplete }: KYCFor
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} disabled={loading}>Cancel</Button>
+        <Button onClick={() => setIsKYCOpen(false)} disabled={loading}>Cancel</Button>
         <Button onClick={handleSubmit} variant="contained" color="primary" disabled={loading}>
           {loading ? <CircularProgress size={24} /> : "Submit KYC"}
         </Button>
       </DialogActions>
-    </Dialog>
+    </Dialog >
   );
 }

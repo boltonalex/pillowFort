@@ -100,3 +100,12 @@ and maintainability. •	Implement end-to-end testing for API reliability.
   tool do dynamic updates to tokens (or remove env and re-add)
 - CORS added to BE and hardcoded to the VITE default local port TODO: make this
   more robust
+- Google SSO with some URL rewrite to sanitise the FE experience
+- firebase DB interactions and auth are all handled on the BE
+- do repeat investments tally or stack as new
+- 2fa is a paid-for feature on firebase but would be requirement on a prod
+  version
+- mobile fist UI to match whats available on https://www.cushon.co.uk/
+- add more information into the funds, with maybe a calculator on your potential
+  investment over time (% yields etc)
+- kyc functionality is demo only. this would need to be built for prod

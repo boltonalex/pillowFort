@@ -13,21 +13,21 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useInvestments } from "./context/InvestmentProvider";
+import { useAuth } from "./context/AuthProvider";
 
 export default function Funds() {
-  const { funds, refreshInvestments } = useInvestments();
+  const { funds, refreshInvestments, investInFund } = useInvestments();
+  const { user, token, userData, setIsKYCOpen } = useAuth();
   const [isInvesting, setIsInvesting] = useState(false);
   const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
   const [investmentAmount, setInvestmentAmount] = useState<number>(0);
-  const [userId] = useState<string | null>(() => localStorage.getItem("userId"));
-  const [token] = useState<string | null>(() => localStorage.getItem("authToken"));
 
   // 💰 Handle investment submission
   const handleInvest = async () => {
-    if (!selectedFund || !investmentAmount || !userId || !token) return;
+    if (!selectedFund || !investmentAmount || !user || !token) return;
 
     try {
-      await investInFund(token, userId, selectedFund.id, investmentAmount, selectedFund.name);
+      await investInFund(selectedFund.id, investmentAmount);
       setIsInvesting(false);
       alert(`Successfully invested £${investmentAmount} in ${selectedFund.name}`);
       setInvestmentAmount(0);
@@ -42,7 +42,6 @@ export default function Funds() {
     <div>
       <Typography variant="h6">Available Investment Funds</Typography>
       {funds.length === 0 ? <CircularProgress /> : null}
-
       <List>
         {funds?.map((fund) => (
           <ListItem key={fund.id}>
@@ -50,11 +49,12 @@ export default function Funds() {
               primary={fund.name}
               secondary={`${fund.description} - Minimum: £${fund.minimum}`}
             />
-            {!token ? (
+            {/* TODO: check on isKycVerified value before allowing users to click invest... */}
+            {!user ? (
               <Button variant="outlined" disabled>
                 Login to Invest
               </Button>
-            ) : (
+            ) : (userData && userData?.kycVerified) ? (
               <Button
                 variant="contained"
                 color="primary"
@@ -64,6 +64,17 @@ export default function Funds() {
                 }}
               >
                 Invest
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setSelectedFund(fund);
+                  setIsKYCOpen(true);
+                }}
+              >
+                Complete KYC
               </Button>
             )}
           </ListItem>

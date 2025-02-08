@@ -39,7 +39,7 @@ async function generateIdToken(uid) {
 
     // Update or add FIREBASE_TEST_TOKEN
     const updatedEnv = envContent.includes("FIREBASE_TEST_TOKEN=")
-      ? envContent.replace(/FIREBASE_TEST_TOKEN=.*/, `FIREBASE_TEST_TOKEN='${idToken}'`)
+      ? envContent.replace(/FIREBASE_TEST_TOKEN=.*/, `FIREBASE_TEST_TOKEN=${idToken}`)
       : `${envContent}\nFIREBASE_TEST_TOKEN='${idToken}'\n`;
 
     fs.writeFileSync(envPath, updatedEnv, 'utf8');
@@ -51,4 +51,4 @@ async function generateIdToken(uid) {
 }
 
 // Call the function with a test user ID
-generateIdToken("test-user-123");
+generateIdToken(process.env.FIREBASE_TEST_USER_ID);

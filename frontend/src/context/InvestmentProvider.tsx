@@ -15,6 +15,7 @@ interface Fund {
   name: string;
   description: string;
   currency: string;
+  minimum: number;
 }
 
 interface InvestmentContextProps {
@@ -22,12 +23,13 @@ interface InvestmentContextProps {
   investments: Investment[];
   refreshInvestments: () => void;
   refreshFunds: () => void;
+  investInFund: (fundId: string, amount: number) => Promise<void>;
 }
 
 const InvestmentContext = createContext<InvestmentContextProps | undefined>(undefined);
 
 export function InvestmentProvider({ children }: { children: ReactNode }) {
-  const { userId, token } = useAuth();
+  const { user, token } = useAuth();
   const [funds, setFunds] = useState<Fund[]>([]);
   const [investments, setInvestments] = useState<Investment[]>([]);
 
@@ -36,9 +38,7 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
     try {
       const response = await fetch("http://localhost:3000/api/funds", {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
 
       if (!response.ok) {
@@ -48,16 +48,16 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
       const fundsData = await response.json();
       setFunds(fundsData.funds);
     } catch (error) {
-      console.error("Error fetching funds from API:", error);
+      console.error("Error fetching funds:", error);
     }
   };
 
   // Fetch Investments for the logged-in user
   const refreshInvestments = useCallback(async () => {
-    if (!userId || !token) return;
+    if (!user || !token) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/investments/${userId}`, {
+      const response = await fetch(`http://localhost:3000/api/investments/${user}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -70,24 +70,59 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
       }
 
       const investmentsData = await response.json();
-      setInvestments(investmentsData.investments);
+      setInvestments(investmentsData);
     } catch (error) {
-      console.error("Error fetching investments from API:", error);
+      console.error("Error fetching investments:", error);
     }
-  }, [userId]);
+  }, [token, user]);
+
+  // Function to handle investing in a fund
+  const investInFund = async (fundId: string, amount: number) => {
+    if (!user || !token) {
+      console.error("Investment attempt without authentication.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/api/investments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId: user, fundId, amount }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to invest in fund.");
+      }
+      refreshInvestments();
+    } catch (error) {
+      console.error("Investment failed:", error);
+    }
+  };
 
   useEffect(() => {
     refreshFunds();
   }, []);
 
   useEffect(() => {
-    if (userId) {
+    if (user) {
       refreshInvestments();
     }
-  }, [refreshInvestments, userId]);
+  }, [refreshInvestments, user]);
 
   return (
-    <InvestmentContext.Provider value={{ funds, investments, refreshInvestments, refreshFunds }}>
+    <InvestmentContext.Provider
+      value={{
+        funds,
+        investments,
+        refreshInvestments,
+        refreshFunds,
+        investInFund,
+      }}
+    >
       {children}
     </InvestmentContext.Provider>
   );
