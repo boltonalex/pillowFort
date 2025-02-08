@@ -1,46 +1,31 @@
-// import { useEffect, useState } from "react";
-import { CssBaseline, ThemeProvider, createTheme, Container, Typography, Button } from "@mui/material";
 import LoginModal from "./LoginModal";
-import Investments from "./Investments";
-import Funds from "./Funds";
 import KYCForm from "./KYCForm";
 import { InvestmentProvider } from "./context/InvestmentProvider";
 import { AuthProvider } from "./context/AuthProvider";
-import AuthButtons from './components/AuthButtons'
-
-const theme = createTheme({
-  palette: {
-    primary: { main: "#1976d2" },
-    secondary: { main: "#ff9800" },
-  },
-});
+import Header from "./components/Header";
+import Home from './views/Home';
+import Funds from './views/Funds';
+import { Routes, Route } from "react-router";
 
 export default function App() {
 
   return (
-    <ThemeProvider theme={theme}>
+    <div className='font-work font-bold'>
+
       <AuthProvider>
-
         <InvestmentProvider>
-
-          <CssBaseline />
-          <Container maxWidth="md">
-            <Typography variant="h4" sx={{ mt: 4, mb: 2 }}>
-              PillowFort Investments
-            </Typography>
-            <AuthButtons />
-
-            <KYCForm />
-
-            <Funds />
-
-            <Investments />
+          <div className='w-full'>
+            <Header />
+            <Routes>
+              <Route index element={<Home />} />
+              <Route path="funds" element={<Funds />} />
+            </Routes>
 
             <LoginModal />
-          </Container>
+            <KYCForm />
+          </div>
         </InvestmentProvider>
       </AuthProvider>
-
-    </ThemeProvider>
+    </div>
   );
 }

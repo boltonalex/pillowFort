@@ -1,5 +1,5 @@
 import { useAuth } from "../context/AuthProvider";
-import { Typography, Button } from "@mui/material";
+// import { Typography, Button } from "@mui/material";
 
 const AuthButtons = () => {
   const { user, setIsLoginOpen, logout } = useAuth();
@@ -7,15 +7,14 @@ const AuthButtons = () => {
   return (
     <>
       {!user ? (
-        <Button variant="contained" color="primary" onClick={() => setIsLoginOpen(true)}>
+        <button onClick={() => setIsLoginOpen(true)}>
           Login
-        </Button>
+        </button>
       ) : (
         <>
-          {/* <Typography color="success.main">✅ Logged in</Typography> */}
-          <Button variant="outlined" color="secondary" onClick={logout} sx={{ ml: 2 }}>
+          <button onClick={logout}>
             Logout
-          </Button>
+          </button>
         </>
       )}
 

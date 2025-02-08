@@ -109,3 +109,7 @@ and maintainability. •	Implement end-to-end testing for API reliability.
 - add more information into the funds, with maybe a calculator on your potential
   investment over time (% yields etc)
 - kyc functionality is demo only. this would need to be built for prod
+
+## **Frontend design choices
+
+-- similar font instead of Museo Sans for simplicity
