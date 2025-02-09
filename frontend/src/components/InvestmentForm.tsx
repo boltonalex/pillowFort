@@ -7,34 +7,37 @@ interface InvestmentFormProps {
   onInvest: (amount: number) => void;
 }
 
+const formatCurrency = (value: string, forceTwoDecimals = false): string => {
+  const numericValue = value.replace(/[^0-9.]/g, "");
+  const parsedValue = parseFloat(numericValue);
+
+  if (isNaN(parsedValue)) return "";
+
+  return parsedValue.toLocaleString("en-GB", {
+    style: "currency",
+    currency: "GBP",
+    minimumFractionDigits: forceTwoDecimals ? 2 : 0,
+  });
+};
+
 export default function InvestmentForm({ selectedFund, onClose, onInvest }: InvestmentFormProps) {
   const [investmentAmount, setInvestmentAmount] = useState<string>("");
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const formatCurrency = (value: string) => {
-    let numericValue = value.replace(/[^0-9.]/g, "");
-    const decimalParts = numericValue.split(".");
-    if (decimalParts.length > 2) {
-      numericValue = decimalParts[0] + "." + decimalParts.slice(1).join("");
-    }
-    const parsedValue = parseFloat(numericValue);
-    if (isNaN(parsedValue)) return numericValue; // Allow unfinished input
-    return numericValue.includes(".") ? numericValue : parsedValue.toLocaleString("en-GB");
-  };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInvestmentAmount(formatCurrency(e.target.value));
   };
+
   const handleBlur = () => {
     if (investmentAmount) {
-      const numericValue = parseFloat(investmentAmount.replace(/[^0-9.]/g, ""));
-      if (!isNaN(numericValue)) {
-        setInvestmentAmount(numericValue.toLocaleString("en-GB", { minimumFractionDigits: 2 }));
-      }
+      setInvestmentAmount(formatCurrency(investmentAmount, true));
     }
   };
+
   const handleFocus = () => {
-    setInvestmentAmount(investmentAmount.replace(/,/g, ""));
+    setInvestmentAmount(investmentAmount.replace(/[^0-9.]/g, ""));
   };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const numericAmount = parseFloat(investmentAmount.replace(/[^0-9.]/g, ""));
@@ -50,14 +53,11 @@ export default function InvestmentForm({ selectedFund, onClose, onInvest }: Inve
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h3 className="text-xl font-semibold">Invest in {selectedFund?.name}</h3>
-
-        {/* ✅ React Form */}
         <form onSubmit={handleSubmit} className="mt-4">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600">£</span>
             <input
               ref={inputRef}
-              type="number"
+              type="text"
               name="investmentAmount"
               className="w-full p-2 pl-7 border border-gray-300 rounded-lg"
               placeholder="Investment Amount"
