@@ -61,7 +61,7 @@ export default function Funds() {
       )}
 
 
-      <div className="bg-gray-100 p-6 rounded-b-3xl shadow-lg flex">
+      <div className="bg-gray-100 p-6 rounded-b-3xl shadow-lg flex sm:flex-row flex-col">
         <AvailableFunds funds={funds} setSelectedFund={setSelectedFund} setIsInvesting={setIsInvesting} />
         <div className="w-[5px] bg-pink-500 mx-6 rounded-3xl"></div>
         <UserInvestments groupedInvestments={groupedInvestments} />

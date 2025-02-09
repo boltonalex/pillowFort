@@ -8,7 +8,7 @@ export default function AvailableFunds({ funds, setSelectedFund, setIsInvesting 
   const navigate = useNavigate();
 
   return (
-    <div className="w-1/2 px-2">
+    <div className="sm:w-1/2 w-full px-2">
       <h2 className="text-2xl font-semibold text-gray-900 mb-4">Available Funds</h2>
 
       {sortedFunds.length === 0 ? (

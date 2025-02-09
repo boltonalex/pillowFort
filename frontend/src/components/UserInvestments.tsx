@@ -12,8 +12,8 @@ export default function UserInvestments({ groupedInvestments }: UserInvestmentsP
   );
 
   return (
-    <div className="w-1/2 px-2">
-      <h2 className="text-2xl font-semibold text-gray-900 mb-4">Your Investments</h2>
+    <div className="sm:w-1/2 w-full px-2">
+      <h2 className="text-2xl font-semibold text-gray-900 mb-4 sm:mt-0 mt-6">Your Investments</h2>
 
       {!token ? (
         <p className="text-gray-500 mt-4">Login to view your investments.</p>
