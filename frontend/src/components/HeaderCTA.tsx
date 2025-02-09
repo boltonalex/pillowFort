@@ -10,8 +10,8 @@ const HeaderCTA = () => {
 
   return (
     <div className='flex p-4 pr-0 gap-2'>
-      {!location.pathname.includes('funds') &&
-        <CushonButton clickTarget={'funds'}>{user ? 'View Funds' : 'Get Started'}</CushonButton>
+      {!location.pathname.includes('fundList') &&
+        <CushonButton clickTarget={'fundList'}>{user ? 'View Funds' : 'Get Started'}</CushonButton>
       }
       <AuthButtons />
     </div>

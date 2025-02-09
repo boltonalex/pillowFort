@@ -18,7 +18,7 @@ export default function App() {
             <Header />
             <Routes>
               <Route index element={<Home />} />
-              <Route path="funds" element={<Funds />} />
+              <Route path="fundList" element={<Funds />} />
             </Routes>
 
             <LoginModal />

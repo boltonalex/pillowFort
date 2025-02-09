@@ -125,7 +125,7 @@ export default function KYCForm() {
                 <option>Month</option>
                 {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
               </select>
-              <input type="text" name="dobYear" placeholder="Year" className="p-3 border border-gray-300 rounded-lg w-full" onChange={handleChange} required />
+              <input type="number" name="dobYear" placeholder="Year" className="p-3 border border-gray-300 rounded-lg w-full" onChange={handleChange} required />
             </div>
           </div>
 
