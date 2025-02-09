@@ -23,7 +23,6 @@ export default function KYCForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    console.log({ formData })
     const formattedDOB = `${formData.dobYear}-${formData.dobMonth.padStart(2, '0')}-${formData.dobDay.padStart(2, '0')}`;
 
     setFormData({
@@ -96,7 +95,7 @@ export default function KYCForm() {
 
         <div>
           <h3 className="text-lg font-semibold text-gray-800 mb-2">What's your name and address?</h3>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-3 grid-cols-1 gap-4">
             <select name="title" className="p-3 border border-gray-300 rounded-lg w-full" onChange={handleChange}>
               <option>Select</option>
               <option>Mr</option>
@@ -112,7 +111,7 @@ export default function KYCForm() {
 
         <div>
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Date of birth</h3>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-3 gap-4">
             <select name="dobDay" className="p-3 border border-gray-300 rounded-lg w-full" onChange={handleChange}>
               <option>Day</option>
               {[...Array(31)].map((_, i) => <option key={i}>{i + 1}</option>)}
