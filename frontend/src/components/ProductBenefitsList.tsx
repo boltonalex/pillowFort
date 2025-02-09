@@ -1,5 +1,3 @@
-
-
 const productBenefits = [
   {
     text: 'Start with a little as £100 or from £50 a month via direct debit',
@@ -22,7 +20,6 @@ const productBenefits = [
     img: './app.svg'
   }
 ]
-
 
 const ProductBenefitsList = () => {
   return (

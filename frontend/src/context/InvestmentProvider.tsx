@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode, useCallback } from "react";
 import { useAuth } from "./useAuth";
-import { InvestmentContext } from "./InvestmentContext"; // Import the separate InvestmentContext
+import { InvestmentContext } from "./InvestmentContext";
 import { Fund, Investment } from "../types";
 const BE_URL = import.meta.env.VITE_BE_URL;
 

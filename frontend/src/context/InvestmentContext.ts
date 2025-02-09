@@ -24,5 +24,4 @@ interface InvestmentContextProps {
   investInFund: (fundId: string, amount: number) => Promise<void>;
 }
 
-// Create and export InvestmentContext
 export const InvestmentContext = createContext<InvestmentContextProps | undefined>(undefined);

@@ -6,7 +6,6 @@ export default function UserInvestments({ groupedInvestments }: UserInvestmentsP
   const { token } = useAuth();
   const { investments } = useInvestments();
 
-  // ✅ Sort investments alphabetically by fund name
   const sortedInvestments = Object.entries(groupedInvestments).sort(([fundA], [fundB]) =>
     fundA.localeCompare(fundB)
   );
@@ -28,7 +27,6 @@ export default function UserInvestments({ groupedInvestments }: UserInvestmentsP
                 <p className="text-gray-500 text-sm mt-2 mr-3">Total Investment</p>
                 <p className="text-gray-600 font-bold text-xl">£{totalAmount.toLocaleString()}</p>
               </div>
-
 
               <div className="mt-4">
                 <button

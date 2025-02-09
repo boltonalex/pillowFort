@@ -11,29 +11,19 @@ export default function InvestmentForm({ selectedFund, onClose, onInvest }: Inve
   const [investmentAmount, setInvestmentAmount] = useState<string>("");
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // ✅ Format input dynamically as a number (no £ symbol inside the input)
   const formatCurrency = (value: string) => {
-    let numericValue = value.replace(/[^0-9.]/g, ""); // Remove non-numeric characters except decimal
+    let numericValue = value.replace(/[^0-9.]/g, "");
     const decimalParts = numericValue.split(".");
-
-    // Ensure only one decimal point
     if (decimalParts.length > 2) {
       numericValue = decimalParts[0] + "." + decimalParts.slice(1).join("");
     }
-
-    // Convert to float for formatting
     const parsedValue = parseFloat(numericValue);
     if (isNaN(parsedValue)) return numericValue; // Allow unfinished input
-
     return numericValue.includes(".") ? numericValue : parsedValue.toLocaleString("en-GB");
   };
-
-  // ✅ Handle user input smoothly
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInvestmentAmount(formatCurrency(e.target.value));
   };
-
-  // ✅ Ensure proper number format when leaving input
   const handleBlur = () => {
     if (investmentAmount) {
       const numericValue = parseFloat(investmentAmount.replace(/[^0-9.]/g, ""));
@@ -42,16 +32,12 @@ export default function InvestmentForm({ selectedFund, onClose, onInvest }: Inve
       }
     }
   };
-
-  // ✅ Remove formatting when clicking input (so users can edit)
   const handleFocus = () => {
     setInvestmentAmount(investmentAmount.replace(/,/g, ""));
   };
-
-  // ✅ Handle form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const numericAmount = parseFloat(investmentAmount.replace(/[^0-9.]/g, "")); // Convert back to number
+    const numericAmount = parseFloat(investmentAmount.replace(/[^0-9.]/g, ""));
 
     if (!isNaN(numericAmount) && numericAmount >= (selectedFund?.minimum || 0)) {
       onInvest(numericAmount);

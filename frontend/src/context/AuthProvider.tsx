@@ -19,7 +19,6 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-
 export function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
   const [user, setUser] = useState<string | null>(localStorage.getItem("userId"));
@@ -31,7 +30,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
   const navigate = useNavigate();
 
-
+  const logout = useCallback(async (): Promise<void> => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("userData");
+      setToken(null);
+      setUser(null);
+      setUserData(null);
+      navigate('/')
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Logout Error:", error.message);
+      } else {
+        console.error("Logout Error: An unknown error occurred", error);
+      }
+    }
+  }, [navigate]);
 
   const fetchUserData = useCallback(async (token: string, userId: string) => {
     try {
@@ -55,7 +71,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-  }, []);
+  }, [logout]);
 
   useEffect(() => {
     if (token && user) {
@@ -116,12 +132,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoginOpen(false);
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-
       if (!result.user) throw new Error("Google Sign-In failed.");
-
       const token = await result.user.getIdToken();
       const userId = result.user.uid;
-
       setToken(token);
       setUser(userId);
       localStorage.setItem("token", token);
@@ -139,23 +152,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const logout = async (): Promise<void> => {
-    try {
-      await signOut(auth);
-      localStorage.removeItem("token");
-      localStorage.removeItem("userId");
-      localStorage.removeItem("userData");
-      setToken(null);
-      setUser(null);
-      setUserData(null);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Logout Error:", error.message);
-      } else {
-        console.error("Logout Error: An unknown error occurred", error);
-      }
-    }
-  };
+
 
   const updateKYC = async (kycData: Partial<UserData>): Promise<void> => {
     if (!user || !token) return;

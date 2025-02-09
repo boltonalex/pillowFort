@@ -6,14 +6,11 @@ interface CushonButtonProps {
   clickTarget: string;
 }
 
-
 const CushonButton: React.FC<CushonButtonProps> = ({ children, variant = 'pink', clickTarget }) => {
   const navigate = useNavigate();
-
   const handleClick = () => {
     navigate(clickTarget);
   }
-
   if (variant === 'white') {
     return (
       <button
@@ -32,7 +29,6 @@ const CushonButton: React.FC<CushonButtonProps> = ({ children, variant = 'pink',
     </button>
 
   )
-
 }
 
 export default CushonButton
