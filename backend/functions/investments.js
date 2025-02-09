@@ -1,5 +1,5 @@
 const express = require("express");
-const { admin, db } = require("./config/firebase");
+const { db } = require("./config/firebase");
 const authMiddleware = require("./middlewares/authMiddleware"); // Ensure auth middleware is imported
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router.post("/", authMiddleware, async (req, res) => {
       userId,
       fundId,
       amount,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      createdAt: new Date(),
     });
 
     res.status(201).json({

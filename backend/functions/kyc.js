@@ -9,25 +9,24 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 const usersCollection = db.collection("users");
 
-router.post("/", authMiddleware, upload.single("idFile"), async (req, res) => {
-  const { user, name, dob, address, email } = req.body;
+router.post("/:userId", authMiddleware, upload.single("idFile"), async (req, res) => {
+  const { title, firstName, lastName, dob, postcode, email } = req.body;
   const idFile = req.file;
-
-  if (!user || !name || !dob || !address) {
-    return res.status(400).json({ error: "Missing required fields." });
-  }
+  const { userId } = req.params;
 
   try {
-    const userRef = usersCollection.doc(user);
+    const userRef = usersCollection.doc(userId);
     const kycData = {
-      kycVerified: true,
-      name,
+      title,
+      firstName,
+      lastName,
       dob,
       email,
-      address,
+      postcode,
       idUploaded: true, //TODO make file upload to document storage
       updatedAt: new Date(),
-      kycVerified: true
+      kycVerified: true,
+      newsletter: true
     };
 
     await userRef.set(kycData, { merge: false });

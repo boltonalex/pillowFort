@@ -12,6 +12,7 @@ const db = admin.firestore();
 const fundsCollection = db.collection('funds');
 
 router.get('/', async (req, res) => {
+  console.log('Funds')
   try {
     const snapshot = await fundsCollection.get();
     if (snapshot.empty) {
@@ -31,12 +32,3 @@ router.get('/', async (req, res) => {
 });
 
 module.exports = router;
-
-// const express = require("express");
-// const router = express.Router();
-
-// router.get("/", (req, res) => {
-//   res.json({ message: "Funds API is working!" });
-// });
-
-// module.exports = router;

@@ -165,3 +165,5 @@ collection.** 🚀
 
 //TODO: mobile view, testing FE and BE, deploy //TODO: design approach, swagger,
 db, be, design then FE
+
+- ro run the be locally: `firebase emulators:start --only functions`

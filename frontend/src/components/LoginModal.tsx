@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/useAuth";
 
 export default function LoginModal() {
-  const { login, signup, loginWithGoogle, setIsLoginOpen, isLoginOpen } = useAuth();
+  const { login, signup, loginWithGoogle, setIsLoginOpen, isLoginOpen, loginErrorMessage } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSignup, setIsSignup] = useState(false);
@@ -18,12 +18,12 @@ export default function LoginModal() {
     try {
       if (isSignup) {
         await signup(email, password);
+        setIsSignup(false)
       } else {
         await login(email, password);
       }
-      setIsLoginOpen(false);
-    } catch (err: any) {
-      setError(err.message || "Authentication failed. Check your credentials.");
+    } catch (error) {
+      setError(error.message || "Authentication failed. Check your credentials.");
     }
 
     setLoading(false);
@@ -74,7 +74,7 @@ export default function LoginModal() {
 
             <button
               type="submit"
-              className="w-full bg-pink-500 text-white py-2 rounded-lg font-semibold hover:bg-pink-600 transition"
+              className="cursor-pointer w-full bg-pink-500 text-white py-2 rounded-lg font-semibold hover:bg-pink-600 transition"
               disabled={loading}
             >
               {loading ? "Loading..." : isSignup ? "Sign Up" : "Login"}
@@ -82,7 +82,7 @@ export default function LoginModal() {
           </form>
 
           <button
-            className="w-full mt-2 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition"
+            className="cursor-pointer w-full mt-2 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition"
             onClick={loginWithGoogle}
             disabled={loading}
           >
@@ -90,11 +90,16 @@ export default function LoginModal() {
           </button>
 
           <button
-            className="w-full mt-2 text-gray-600 hover:text-gray-900 transition"
+            className="cursor-pointer w-full mt-2 text-gray-600 hover:text-gray-900 transition"
             onClick={() => setIsLoginOpen(false)}
           >
             Cancel
           </button>
+          {loginErrorMessage && (
+            <div className='text-orange-500'>
+              <p>{loginErrorMessage}</p>
+            </div>
+          )}
         </div>
       </div>
     )

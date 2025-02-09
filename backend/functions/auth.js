@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { admin, db } = require('./config/firebase');
+const { db } = require('./config/firebase');
 const authMiddleware = require("./middlewares/authMiddleware"); // Ensure auth middleware is imported
 
 const usersCollection = db.collection("users");
@@ -10,7 +10,7 @@ const makeNewUserDoc = async (userId) => {
   const userRef = usersCollection.doc(userId); // ✅ Specify document ID
   await userRef.set({
     userId,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    createdAt: new Date(),
     address: null,
     dob: null,
     email: null,

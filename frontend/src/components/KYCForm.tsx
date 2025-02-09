@@ -9,6 +9,7 @@ export default function KYCForm() {
     firstName: "",
     lastName: "",
     email: userData?.email || "",
+    dob: "",
     dobDay: "",
     dobMonth: "",
     dobYear: "",
@@ -22,8 +23,12 @@ export default function KYCForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    console.log({ formData })
+    const formattedDOB = `${formData.dobYear}-${formData.dobMonth.padStart(2, '0')}-${formData.dobDay.padStart(2, '0')}`;
+
     setFormData({
       ...formData,
+      dob: formattedDOB,
       [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     });
   };
@@ -145,7 +150,7 @@ export default function KYCForm() {
           </div>
 
           <div className="flex justify-end">
-            <button type="submit" className="bg-pink-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-pink-600 transition">
+            <button type="submit" className="cursor-pointer bg-pink-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-pink-600 transition">
               {loading ? "Submitting..." : "Create my account"}
             </button>
           </div>

@@ -27,6 +27,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   );
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [isKYCOpen, setIsKYCOpen] = useState<boolean>(false);
+  const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
+
 
   const fetchUserData = useCallback(async (token: string, userId: string) => {
     try {
@@ -68,11 +70,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       localStorage.setItem("token", userToken);
       setUser(loggedUser.uid);
       setToken(userToken);
-
       fetchUserData(userToken, loggedUser.uid);
+      setIsLoginOpen(false);
+      setLoginErrorMessage('');
     } catch (error: unknown) {
+      logout();
       if (error instanceof Error) {
         console.error("Login Error:", error.message);
+        setLoginErrorMessage(error.message)
       } else {
         console.error("Login Error: An unknown error occurred", error);
       }
@@ -89,11 +94,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       localStorage.setItem("token", userToken);
       setUser(newUser.uid);
       setToken(userToken);
-
+      setIsLoginOpen(false)
       fetchUserData(userToken, newUser.uid);
+      setLoginErrorMessage('')
+
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("Signup Error:", error.message);
+        setLoginErrorMessage(error.message)
       } else {
         console.error("Signup Error: An unknown error occurred", error);
       }
@@ -115,11 +123,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(userId);
       localStorage.setItem("token", token);
       localStorage.setItem("userId", userId);
-
+      setIsLoginOpen(false)
       fetchUserData(token, userId);
+      setLoginErrorMessage('')
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("Google Sign-In Error:", error.message);
+        setLoginErrorMessage(error.message)
       } else {
         console.error("Google Sign-In Error: An unknown error occurred", error);
       }
@@ -187,7 +197,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         logout,
         setIsLoginOpen,
         setIsKYCOpen,
-        updateKYC
+        updateKYC,
+        loginErrorMessage
       }}
     >
       {children}

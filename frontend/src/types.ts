@@ -45,6 +45,7 @@ export interface AuthContextProps {
   isLoginOpen: boolean;
   isKYCOpen: boolean;
   userData: UserData | null;
+  loginErrorMessage: string;
   setToken: (token: string | null) => void;
   loginWithGoogle: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
