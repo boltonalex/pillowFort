@@ -11,7 +11,7 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
 
   const refreshFunds = async () => {
     try {
-      const response = await fetch(`${BE_URL}/api/funds`, {
+      const response = await fetch(`${BE_URL}/funds`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -31,7 +31,7 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
     if (!user || !token) return;
 
     try {
-      const response = await fetch(`${BE_URL}/api/investments/${user}`, {
+      const response = await fetch(`${BE_URL}/investments/${user}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const response = await fetch(`${BE_URL}/api/investments`, {
+      const response = await fetch(`${BE_URL}/investments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

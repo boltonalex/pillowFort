@@ -12,9 +12,7 @@ export default function KYCForm() {
     dobDay: "",
     dobMonth: "",
     dobYear: "",
-    address: "",
     postcode: "",
-    mobile: "",
     newsletter: false,
   });
 
@@ -39,7 +37,7 @@ export default function KYCForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.address || !formData.mobile) {
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.postcode) {
       setError("Please complete all required fields.");
       return;
     }

@@ -30,7 +30,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const fetchUserData = useCallback(async (token: string, userId: string) => {
     try {
-      const response = await fetch(`${BE_URL}/api/auth/${userId}`, {
+      const response = await fetch(`${BE_URL}/auth/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -148,8 +148,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (!user || !token) return;
 
     try {
-      const response = await fetch(`${BE_URL}/api/kyc/${user}`, {
-        method: "PATCH",
+      const response = await fetch(`${BE_URL}/kyc/${user}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

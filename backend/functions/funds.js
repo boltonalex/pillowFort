@@ -1,9 +1,7 @@
 const express = require('express');
 const admin = require('firebase-admin');
-
 const router = express.Router();
 
-// Ensure Firebase Admin is initialized
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.applicationDefault(),
@@ -13,7 +11,6 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 const fundsCollection = db.collection('funds');
 
-/* GET available ISA funds (Public route) */
 router.get('/', async (req, res) => {
   try {
     const snapshot = await fundsCollection.get();
@@ -34,3 +31,12 @@ router.get('/', async (req, res) => {
 });
 
 module.exports = router;
+
+// const express = require("express");
+// const router = express.Router();
+
+// router.get("/", (req, res) => {
+//   res.json({ message: "Funds API is working!" });
+// });
+
+// module.exports = router;

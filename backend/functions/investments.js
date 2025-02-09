@@ -1,6 +1,6 @@
 const express = require("express");
-const { admin, db } = require("../config/firebase");
-const authMiddleware = require("../middlewares/authMiddleware"); // Ensure auth middleware is imported
+const { admin, db } = require("./config/firebase");
+const authMiddleware = require("./middlewares/authMiddleware"); // Ensure auth middleware is imported
 const router = express.Router();
 
 // Reference Firestore

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { admin, db } = require("../config/firebase");
-const authMiddleware = require("../middlewares/authMiddleware"); // Ensure auth middleware is imported
+const { admin, db } = require('./config/firebase');
+const authMiddleware = require("./middlewares/authMiddleware"); // Ensure auth middleware is imported
 
 const usersCollection = db.collection("users");
 

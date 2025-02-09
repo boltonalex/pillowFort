@@ -2,7 +2,9 @@ const admin = require("firebase-admin");
 const { getFirestore } = require("firebase-admin/firestore");
 require("dotenv").config();
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+const KEY = process.env.SERVICE_ACCOUNT_KEY;
+
+const serviceAccount = JSON.parse(KEY);
 
 if (!admin.apps.length) {
   admin.initializeApp({

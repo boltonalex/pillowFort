@@ -11,10 +11,9 @@ const fundsRouter = require("./routes/funds");
 const kycRouter = require("./routes/kyc");
 const authRouter = require("./routes/auth");
 
-const app = express();
-
 dotenv.config();
 
+const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",

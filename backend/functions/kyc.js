@@ -1,8 +1,8 @@
 const express = require("express");
 const multer = require("multer");
-const { db } = require("../config/firebase");
+const { db } = require("./config/firebase");
 
-const authMiddleware = require("../middlewares/authMiddleware");
+const authMiddleware = require("./middlewares/authMiddleware");
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
