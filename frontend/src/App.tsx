@@ -18,8 +18,8 @@ export default function App() {
             <Header />
             <Routes>
               <Route index element={<Home />} />
-              <Route path="fundList" element={<Funds />} />
-              <Route path="kyc" element={<KYC />} />
+              <Route path="/fundList" element={<Funds />} />
+              <Route path="/kyc" element={<KYC />} />
             </Routes>
 
             <LoginModal />

@@ -48,7 +48,13 @@ export default function Funds() {
       {user && investmentSum > 0 && (
         <div className="bg-pink-500 text-white p-8 text-center relative">
           <h2 className="text-2xl font-semibold">Total Investments</h2>
-          <p className="text-5xl font-bold mt-2">{`£${investmentSum}`}</p>
+          <p className="text-5xl font-bold mt-2">
+            {/* {`£${investmentSum}`} */}
+            {new Intl.NumberFormat("en-GB", {
+              style: "currency",
+              currency: "GBP",
+            }).format(investmentSum)}
+          </p>
         </div>
       )}
 
