@@ -22,8 +22,12 @@ export default function LoginModal() {
       } else {
         await login(email, password);
       }
-    } catch (error) {
-      setError(error.message || "Authentication failed. Check your credentials.");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Login Error:", error.message);
+      } else {
+        console.error("Login Error: An unknown error occurred", error);
+      }
     }
 
     setLoading(false);
