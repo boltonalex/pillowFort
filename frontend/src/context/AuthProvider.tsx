@@ -1,6 +1,7 @@
 import { useState, useEffect, ReactNode, useCallback } from "react";
 import { AuthContext } from "./AuthContext";
 import { UserData, AuthContextProps } from '../types';
+const BE_URL = import.meta.env.VITE_BE_URL;
 
 import {
   createUserWithEmailAndPassword,
@@ -29,7 +30,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const fetchUserData = useCallback(async (token: string, userId: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/auth/${userId}`, {
+      const response = await fetch(`${BE_URL}/api/auth/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -147,7 +148,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (!user || !token) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/kyc/${user}`, {
+      const response = await fetch(`${BE_URL}/api/kyc/${user}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

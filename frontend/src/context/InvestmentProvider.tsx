@@ -2,6 +2,7 @@ import { useState, useEffect, ReactNode, useCallback } from "react";
 import { useAuth } from "./useAuth";
 import { InvestmentContext } from "./InvestmentContext"; // Import the separate InvestmentContext
 import { Fund, Investment } from "../types";
+const BE_URL = import.meta.env.VITE_BE_URL;
 
 export function InvestmentProvider({ children }: { children: ReactNode }) {
   const { user, token } = useAuth();
@@ -10,7 +11,7 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
 
   const refreshFunds = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/funds", {
+      const response = await fetch(`${BE_URL}/api/funds`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -30,7 +31,7 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
     if (!user || !token) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/investments/${user}`, {
+      const response = await fetch(`${BE_URL}/api/investments/${user}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +57,7 @@ export function InvestmentProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/investments", {
+      const response = await fetch(`${BE_URL}/api/investments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
