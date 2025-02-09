@@ -1,35 +1,52 @@
-var express = require('express');
-// var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require("cors");
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const cors = require("cors");
+const dotenv = require("dotenv");
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var investmentsRouter = require('./routes/investments');
-var fundsRouter = require('./routes/funds');
-var kycRouter = require("./routes/kyc");
-var authRouter = require("./routes/auth");
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+const investmentsRouter = require("./routes/investments");
+const fundsRouter = require("./routes/funds");
+const kycRouter = require("./routes/kyc");
+const authRouter = require("./routes/auth");
 
-var app = express();
+const app = express();
 
-app.use(cors({
-  origin: ["http://localhost:5173", "https://accounts.google.com"],
-  credentials: true,
-  methods: ["GET", "POST", "OPTIONS", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+dotenv.config();
 
-app.use(logger('dev'));
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://accounts.google.com",
+  process.env.FE_URL
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/', indexRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/investments', investmentsRouter);
-app.use('/api/funds', fundsRouter);
-app.use('/api/kyc', kycRouter);
+app.use("/", indexRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/investments", investmentsRouter);
+app.use("/api/funds", fundsRouter);
+app.use("/api/kyc", kycRouter);
 app.use("/api/auth", authRouter);
 
 module.exports = app;
