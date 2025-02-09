@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useAuth } from "../context/useAuth";
 
 export default function KYCForm() {
-  const { user, isKYCOpen, setIsKYCOpen, updateKYC } = useAuth();
+  const { isKYCOpen, setIsKYCOpen, updateKYC, userData } = useAuth();
 
   const [formData, setFormData] = useState({
     title: "",
     firstName: "",
     lastName: "",
-    email: user?.email || "",
+    email: userData?.email || "",
     dobDay: "",
     dobMonth: "",
     dobYear: "",
@@ -22,7 +22,6 @@ export default function KYCForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 🔹 Handle Input Changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setFormData({
@@ -31,18 +30,15 @@ export default function KYCForm() {
     });
   };
 
-  // 🔹 Handle File Selection
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setIdFile(event.target.files[0]);
     }
   };
 
-  // 🔹 Handle KYC Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate required fields
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.address || !formData.mobile) {
       setError("Please complete all required fields.");
       return;
@@ -67,8 +63,6 @@ export default function KYCForm() {
     setLoading(false);
   };
 
-  console.log({ user })
-
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center bg-black/50 ${isKYCOpen ? "visible" : "hidden"}`}
@@ -87,7 +81,6 @@ export default function KYCForm() {
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email */}
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-2">What email would you like to use?</h3>
             <div className="grid grid-cols-1 gap-4">
@@ -96,13 +89,12 @@ export default function KYCForm() {
                 name="email"
                 placeholder="Email"
                 className="p-3 border border-gray-300 rounded-lg w-full"
-                value={formData.email || user?.email || ""}
+                value={formData.email || userData?.email || ""}
                 onChange={handleChange}
                 required />
             </div>
           </div>
 
-          {/* Name & Address */}
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-2">What's your name and address?</h3>
             <div className="grid grid-cols-3 gap-4">
@@ -119,7 +111,6 @@ export default function KYCForm() {
             <input type="text" name="postcode" placeholder="Postcode" className="mt-4 p-3 border border-gray-300 rounded-lg w-full" onChange={handleChange} required />
           </div>
 
-          {/* Date of Birth */}
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Date of birth</h3>
             <div className="grid grid-cols-3 gap-4">
@@ -135,7 +126,6 @@ export default function KYCForm() {
             </div>
           </div>
 
-          {/* ✅ Photo ID Upload */}
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Photo ID</h3>
             <input
@@ -148,7 +138,6 @@ export default function KYCForm() {
             {idFile && <p className="text-sm text-gray-500 mt-1">Selected: {idFile.name}</p>}
           </div>
 
-          {/* Contact Permission */}
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Contact Permission</h3>
             <label className="flex items-center space-x-2">
@@ -157,7 +146,6 @@ export default function KYCForm() {
             </label>
           </div>
 
-          {/* Submit Button */}
           <div className="flex justify-end">
             <button type="submit" className="bg-pink-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-pink-600 transition">
               {loading ? "Submitting..." : "Create my account"}

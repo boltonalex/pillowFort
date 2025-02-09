@@ -1,5 +1,6 @@
-import { useState, useEffect, ReactNode } from "react";
-import { AuthContext, AuthContextProps } from "./AuthContext"; // Import from new file
+import { useState, useEffect, ReactNode, useCallback } from "react";
+import { AuthContext } from "./AuthContext";
+import { UserData, AuthContextProps } from '../types';
 
 import {
   createUserWithEmailAndPassword,
@@ -16,6 +17,7 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+
 export function AuthProvider({ children }: AuthProviderProps) {
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
   const [user, setUser] = useState<string | null>(localStorage.getItem("userId"));
@@ -25,8 +27,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [isKYCOpen, setIsKYCOpen] = useState<boolean>(false);
 
-  // Fetch user data from API
-  const fetchUserData = async (token: string, userId: string) => {
+  const fetchUserData = useCallback(async (token: string, userId: string) => {
     try {
       const response = await fetch(`http://localhost:3000/api/auth/${userId}`, {
         method: "GET",
@@ -39,22 +40,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (!response.ok) {
         throw new Error("Failed to fetch userData");
       }
-      // console.log(response.json())
+      if (response.status === 403) {
+        logout()
+      }
       const userDataResponse = await response.json();
       setUserData(userDataResponse);
       localStorage.setItem("userData", JSON.stringify(userDataResponse));
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (token && user) {
       fetchUserData(token, user);
     }
-  }, [token, user]);
+  }, [fetchUserData, token, user]);
 
-  // Authentication functions
   const login = async (email: string, password: string): Promise<void> => {
     try {
       const userCredential: UserCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -67,8 +69,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setToken(userToken);
 
       fetchUserData(userToken, loggedUser.uid);
-    } catch (error: any) {
-      console.error("Login Error:", error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Login Error:", error.message);
+      } else {
+        console.error("Login Error: An unknown error occurred", error);
+      }
     }
   };
 
@@ -84,8 +90,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setToken(userToken);
 
       fetchUserData(userToken, newUser.uid);
-    } catch (error: any) {
-      console.error("Signup Error:", error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Signup Error:", error.message);
+      } else {
+        console.error("Signup Error: An unknown error occurred", error);
+      }
     }
   };
 
@@ -106,8 +116,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       localStorage.setItem("userId", userId);
 
       fetchUserData(token, userId);
-    } catch (error: any) {
-      console.error("Google Sign-In Error:", error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Google Sign-In Error:", error.message);
+      } else {
+        console.error("Google Sign-In Error: An unknown error occurred", error);
+      }
     }
   };
 
@@ -120,13 +134,43 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setToken(null);
       setUser(null);
       setUserData(null);
-    } catch (error: any) {
-      console.error("Logout Error:", error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Logout Error:", error.message);
+      } else {
+        console.error("Logout Error: An unknown error occurred", error);
+      }
     }
   };
 
-  console.log({ userData })
+  const updateKYC = async (kycData: Partial<UserData>): Promise<void> => {
+    if (!user || !token) return;
 
+    try {
+      const response = await fetch(`http://localhost:3000/api/kyc/${user}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(kycData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update KYC");
+      }
+
+      const updatedUserData = await response.json();
+      setUserData(updatedUserData);
+      localStorage.setItem("userData", JSON.stringify(updatedUserData));
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("KYC Update Error:", error.message);
+      } else {
+        console.error("KYC Update Error: An unknown error occurred", error);
+      }
+    }
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -142,6 +186,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         logout,
         setIsLoginOpen,
         setIsKYCOpen,
+        updateKYC
       }}
     >
       {children}

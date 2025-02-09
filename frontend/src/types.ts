@@ -30,3 +30,27 @@ export interface AvailableFundsProps {
   setSelectedFund: (fund: Fund | null) => void;
   setIsInvesting: (isInvesting: boolean) => void;
 }
+
+export interface UserData {
+  id: string;
+  email: string;
+  name: string;
+  kycVerified?: boolean;
+  [key: string]: unknown;
+}
+
+export interface AuthContextProps {
+  user: string | null;
+  token: string | null;
+  isLoginOpen: boolean;
+  isKYCOpen: boolean;
+  userData: UserData | null;
+  setToken: (token: string | null) => void;
+  loginWithGoogle: () => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  setIsLoginOpen: (isOpen: boolean) => void;
+  setIsKYCOpen: (isOpen: boolean) => void;
+  updateKYC: (kycData: Partial<UserData>) => Promise<void>;
+}

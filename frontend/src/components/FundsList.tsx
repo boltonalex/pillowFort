@@ -8,7 +8,7 @@ import { Fund } from "../types";
 
 export default function Funds() {
   const { funds, refreshInvestments, investInFund, investments } = useInvestments();
-  const { user, token } = useAuth();
+  const { user, token, userData } = useAuth();
   const [isInvesting, setIsInvesting] = useState(false);
   const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
   const [investmentSum, setInvestmentSum] = useState<number>(0);
@@ -51,6 +51,15 @@ export default function Funds() {
           <p className="text-5xl font-bold mt-2">{`£${investmentSum}`}</p>
         </div>
       )}
+
+      {userData && (userData.name || userData.email) && (
+        <div className='p-8 bg-gray-100 shadow-lg'>
+          <p>
+            Your are logged in as: <span className="capitalize">{userData?.name || userData?.email || "Guest"}</span>
+          </p>
+        </div>
+      )}
+
 
       <div className="bg-gray-100 p-6 rounded-b-3xl shadow-lg flex">
         <AvailableFunds funds={funds} setSelectedFund={setSelectedFund} setIsInvesting={setIsInvesting} />

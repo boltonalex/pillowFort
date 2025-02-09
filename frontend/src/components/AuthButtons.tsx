@@ -1,5 +1,4 @@
 import { useAuth } from "../context/useAuth";
-// import { Typography, Button } from "@mui/material";
 
 const AuthButtons = () => {
   const { user, setIsLoginOpen, logout } = useAuth();
