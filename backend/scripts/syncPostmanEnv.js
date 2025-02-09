@@ -2,18 +2,14 @@ const fs = require("fs");
 const dotenv = require("dotenv");
 const axios = require("axios");
 
-dotenv.config(); // Load .env variables
+dotenv.config();
 
 const FIREBASE_TOKEN = process.env.FIREBASE_TEST_TOKEN;
 const USER_ID = process.env.FIREBASE_TEST_USER_ID;
 const POSTMAN_API_KEY = process.env.POSTMAN_API_KEY;
 const POSTMAN_ENV_NAME = process.env.POSTMAN_ENV_NAME || "PillowFort";
 
-console.log("🔍 FIREBASE_TEST_TOKEN:", FIREBASE_TOKEN);
-console.log("🔍 FIREBASE_TEST_USER_ID:", USER_ID);
-console.log("🔍 Searching for Postman environment:", POSTMAN_ENV_NAME);
 
-// Step 1: Fetch all Postman environments
 axios.get("https://api.getpostman.com/environments", {
   headers: { "X-Api-Key": POSTMAN_API_KEY }
 })
@@ -26,9 +22,7 @@ axios.get("https://api.getpostman.com/environments", {
     }
 
     const POSTMAN_ENV_ID = env.id;
-    console.log("✅ Found Postman Environment ID:", POSTMAN_ENV_ID);
 
-    // Step 2: Update the Postman environment with the new token
     const postmanEnv = {
       environment: {
         values: [
@@ -45,7 +39,6 @@ axios.get("https://api.getpostman.com/environments", {
     );
   })
   .then(() => {
-    console.log("✅ Postman environment updated successfully!");
   })
   .catch(error => {
     console.error("❌ Failed to update Postman environment:", error.response ? error.response.data : error.message);
