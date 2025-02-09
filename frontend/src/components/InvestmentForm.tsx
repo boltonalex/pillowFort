@@ -71,7 +71,7 @@ export default function InvestmentForm({ selectedFund, onClose, onInvest }: Inve
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600">£</span>
             <input
               ref={inputRef}
-              type="text"
+              type="number"
               name="investmentAmount"
               className="w-full p-2 pl-7 border border-gray-300 rounded-lg"
               placeholder="Investment Amount"
