@@ -2,6 +2,7 @@ import { useState, useEffect, ReactNode, useCallback } from "react";
 import { AuthContext } from "./AuthContext";
 import { UserData, AuthContextProps } from '../types';
 const BE_URL = import.meta.env.VITE_BE_URL;
+import { useNavigate } from "react-router";
 
 import {
   createUserWithEmailAndPassword,
@@ -28,6 +29,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   const [isKYCOpen, setIsKYCOpen] = useState<boolean>(false);
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
+  const navigate = useNavigate();
+
 
 
   const fetchUserData = useCallback(async (token: string, userId: string) => {
@@ -174,6 +177,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const updatedUserData = await response.json();
       setUserData(updatedUserData);
       localStorage.setItem("userData", JSON.stringify(updatedUserData));
+      navigate('/fundList')
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("KYC Update Error:", error.message);

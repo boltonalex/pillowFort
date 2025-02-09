@@ -1,9 +1,11 @@
 import { useAuth } from "../context/useAuth";
 import { AvailableFundsProps } from "../types";
+import { useNavigate } from "react-router";
 
 export default function AvailableFunds({ funds, setSelectedFund, setIsInvesting }: AvailableFundsProps) {
-  const { user, userData, setIsKYCOpen } = useAuth();
+  const { user, userData } = useAuth();
   const sortedFunds = [...funds].sort((a, b) => a.name.localeCompare(b.name));
+  const navigate = useNavigate();
 
   return (
     <div className="w-1/2 px-2">
@@ -50,7 +52,7 @@ export default function AvailableFunds({ funds, setSelectedFund, setIsInvesting 
                 ) : (
                   <button
                     className="cursor-pointer w-full bg-yellow-500 text-white font-semibold py-2 rounded-lg hover:bg-yellow-600 transition"
-                    onClick={() => setIsKYCOpen(true)}
+                    onClick={() => navigate('/kyc')}
                   >
                     Complete KYC to Invest
                   </button>
@@ -59,7 +61,8 @@ export default function AvailableFunds({ funds, setSelectedFund, setIsInvesting 
             </div>
           ))}
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }
