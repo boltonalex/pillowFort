@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/useAuth";
 
 export default function LoginModal() {
@@ -33,10 +33,24 @@ export default function LoginModal() {
     setLoading(false);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event: { key: string; }) => {
+      if (event.key === "Escape") {
+        setIsLoginOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [setIsLoginOpen]);
+
+
+
   return (
     isLoginOpen && (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <div className="fixed inset-0 flex items-center justify-center bg-black/50" onClick={() => setIsLoginOpen(false)}>
+        <div className="bg-white p-6 rounded-lg shadow-lg w-96" onClick={(e) => e.stopPropagation()}>
           <h2 className="text-xl font-semibold text-center">
             {isSignup ? "Sign Up" : "Login"} to PillowFort
           </h2>
@@ -105,7 +119,7 @@ export default function LoginModal() {
             </div>
           )}
         </div>
-      </div>
+      </div >
     )
   );
 }

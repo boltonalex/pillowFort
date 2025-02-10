@@ -3,7 +3,7 @@ import { AvailableFundsProps } from "../types";
 import { Link } from "react-router";
 
 export default function AvailableFunds({ funds, setSelectedFund, setIsInvesting }: AvailableFundsProps) {
-  const { user, userData } = useAuth();
+  const { user, userData, setIsLoginOpen } = useAuth();
   const sortedFunds = [...funds].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
@@ -35,8 +35,11 @@ export default function AvailableFunds({ funds, setSelectedFund, setIsInvesting 
 
               <div className="mt-4">
                 {!user ? (
-                  <button className="w-full bg-gray-300 text-gray-600 font-semibold py-2 rounded-lg cursor-not-allowed">
-                    Login to Invest
+                  <button
+                    className="cursor-pointer w-full bg-pink-500 text-white font-semibold py-2 rounded-lg hover:bg-pink-600 transition"
+                    onClick={() => setIsLoginOpen(true)}
+                  >
+                    Login or Signup to Invest
                   </button>
                 ) : userData?.kycVerified ? (
                   <button
