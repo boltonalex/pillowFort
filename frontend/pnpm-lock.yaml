@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@alwaysmeticulous/recorder-loader':
+        specifier: ^2.198.0
+        version: 2.198.0
       '@emotion/react':
         specifier: ^11.14.0
         version: 11.14.0(@types/react@19.0.8)(react@19.0.0)
@@ -92,6 +95,17 @@ packages:
 
   '@adobe/css-tools@4.4.1':
     resolution: {integrity: sha512-12WGKBQzjUAI4ayyF4IAtfw2QR/IDoqk6jTddXDhtYTJF9ASmoE1zst7cVtP0aL/F1jUJL5r+JxKXKEgHNbEUQ==}
+
+  '@alwaysmeticulous/api@2.194.1':
+    resolution: {integrity: sha512-qvryd9h92LW+bzFFoeLU72piysoVqSPS/MoJyufGxN2vcxi2/XbM+MsLxqZScegwUBNy44mwvkWeeESwTsiPTQ==}
+    engines: {node: '>= 12'}
+
+  '@alwaysmeticulous/recorder-loader@2.198.0':
+    resolution: {integrity: sha512-SJ3rj0bKZjZkNE9OMeOYxNsynJC8PraqzHZUqNPcu+WbCjixJE0gl4PU+tAFTJFY7MaFi0tcN6/qcJyrd7Q0Mw==}
+
+  '@alwaysmeticulous/sdk-bundles-api@2.198.0':
+    resolution: {integrity: sha512-kRiNsuXtaSr/i2V9VzuMROf2tMm0SZ86sItcKx8+tgUhyfqunOnwYEvpyRyx2v/bDXgtISa+Kvnq783VMT7nvQ==}
+    engines: {node: '>= 12'}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -2199,6 +2213,16 @@ packages:
 snapshots:
 
   '@adobe/css-tools@4.4.1': {}
+
+  '@alwaysmeticulous/api@2.194.1': {}
+
+  '@alwaysmeticulous/recorder-loader@2.198.0':
+    dependencies:
+      '@alwaysmeticulous/sdk-bundles-api': 2.198.0
+
+  '@alwaysmeticulous/sdk-bundles-api@2.198.0':
+    dependencies:
+      '@alwaysmeticulous/api': 2.194.1
 
   '@ampproject/remapping@2.3.0':
     dependencies:
