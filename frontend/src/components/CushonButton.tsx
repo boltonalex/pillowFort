@@ -14,6 +14,8 @@ const CushonButton: React.FC<CushonButtonProps> = ({ children, variant = 'pink',
   if (variant === 'white') {
     return (
       <button
+        role="button"
+        name={clickTarget}
         onClick={handleClick}
         className="cursor-pointer text-pink-500 border-pink-500 border-2 font-semibold rounded-full sm:px-6 px-1 sm:py-2 h-[40px] mt-2 sm:mt-0 flex items-center break-words sm:gap-2 shadow-md hover:bg-pink-200 transition duration-300">
         {children}
@@ -23,6 +25,8 @@ const CushonButton: React.FC<CushonButtonProps> = ({ children, variant = 'pink',
   }
   return (
     <button
+      role="button"
+      name={clickTarget}
       onClick={handleClick}
       className="cursor-pointer text-white bg-pink-500 font-semibold rounded-full sm:px-6 px-1 sm:py-2 h-[40px] mt-2 sm:mt-0 flex items-center break-words sm:gap-2 shadow-md hover:bg-pink-600 transition duration-300">
       {children}

@@ -174,7 +174,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const updatedUserData = await response.json();
       setUserData(updatedUserData);
       localStorage.setItem("userData", JSON.stringify(updatedUserData));
-      navigate('/fundList')
+      navigate('/fundlist')
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("KYC Update Error:", error.message);
