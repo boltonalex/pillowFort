@@ -1,11 +1,10 @@
 import { useAuth } from "../context/useAuth";
 import { AvailableFundsProps } from "../types";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 
 export default function AvailableFunds({ funds, setSelectedFund, setIsInvesting }: AvailableFundsProps) {
   const { user, userData } = useAuth();
   const sortedFunds = [...funds].sort((a, b) => a.name.localeCompare(b.name));
-  const navigate = useNavigate();
 
   return (
     <div className="sm:w-1/2 w-full px-2">
@@ -42,6 +41,8 @@ export default function AvailableFunds({ funds, setSelectedFund, setIsInvesting 
                 ) : userData?.kycVerified ? (
                   <button
                     className="cursor-pointer w-full bg-pink-500 text-white font-semibold py-2 rounded-lg hover:bg-pink-600 transition"
+                    role='button'
+                    title='investCTA'
                     onClick={() => {
                       setSelectedFund(fund);
                       setIsInvesting(true);
@@ -50,12 +51,17 @@ export default function AvailableFunds({ funds, setSelectedFund, setIsInvesting 
                     Invest
                   </button>
                 ) : (
-                  <button
-                    className="cursor-pointer w-full bg-yellow-500 text-white font-semibold py-2 rounded-lg hover:bg-yellow-600 transition"
-                    onClick={() => navigate('/kyc')}
-                  >
-                    Complete KYC to Invest
-                  </button>
+
+                  <Link to="/kyc">
+
+                    <button
+                      role='button'
+                      title='completeCTA'
+                      className="cursor-pointer w-full bg-yellow-500 text-white font-semibold py-2 rounded-lg hover:bg-yellow-600 transition"
+                    >
+                      Complete KYC to Invest
+                    </button>
+                  </Link>
                 )}
               </div>
             </div>

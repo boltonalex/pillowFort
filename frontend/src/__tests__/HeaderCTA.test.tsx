@@ -1,13 +1,13 @@
 import { expect, test, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import HeaderCTA from '../components/HeaderCTA';
 import { AuthProvider } from '../context/AuthProvider';
 import { useAuth } from '../context/useAuth';
 
 // ✅ Mock `useLocation` globally
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('react-router-dom')>();
+vi.mock('react-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-router')>();
   return {
     ...actual,
     useLocation: vi.fn(() => ({ pathname: '/somepage' })), // Default mock
@@ -20,6 +20,7 @@ vi.mock('../context/useAuth', () => ({
 }));
 
 test('renders HeaderCTA with Get Started when user is not logged in', () => {
+  // @ts-expect-error - Ignoring TypeScript error on this line
   vi.mocked(useAuth).mockReturnValue({ user: null });
 
   render(
@@ -34,6 +35,7 @@ test('renders HeaderCTA with Get Started when user is not logged in', () => {
 });
 
 test('renders HeaderCTA with View Funds when user is logged in', () => {
+  // @ts-expect-error - Ignoring TypeScript error on this line
   vi.mocked(useAuth).mockReturnValue({ user: { name: 'Test User' } });
 
   render(
@@ -48,6 +50,7 @@ test('renders HeaderCTA with View Funds when user is logged in', () => {
 });
 
 test('renders AuthButtons component', () => {
+  // @ts-expect-error - Ignoring TypeScript error on this line
   vi.mocked(useAuth).mockReturnValue({ user: null });
 
   render(

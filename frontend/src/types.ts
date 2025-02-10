@@ -32,9 +32,9 @@ export interface AvailableFundsProps {
 }
 
 export interface UserData {
-  id: string;
-  email: string;
-  name: string;
+  id: string | null;
+  email: string | null;
+  name: string | null;
   kycVerified?: boolean;
   [key: string]: unknown;
 }

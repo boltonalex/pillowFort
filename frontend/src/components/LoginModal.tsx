@@ -43,7 +43,7 @@ export default function LoginModal() {
 
           {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
 
-          <form action={handleAuth} className="mt-4 space-y-4">
+          <form action={handleAuth} className="mt-4 space-y-4" role='form'>
             <input
               type="email"
               name="email"
