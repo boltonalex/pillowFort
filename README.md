@@ -4,7 +4,8 @@
 
 ## 📌 Overview
 
-PillowFort is a simple direct to customer investment platform.
+PillowFort is a simple direct to customer investment platform. Platform is
+usable on a mobile device and a desktop.
 
 ## http://pillow-fort.vercel.app
 
@@ -68,6 +69,7 @@ To maintain flexibility and ease of development, the project is structured as a
   website and apple store for iPad view
   - https://www.figma.com/design/rV7IK0nLn4XCZQuxojiES4/pillowFort?node-id=0-1&t=ntkWfJajgoZa2X39-1
 - UX flow is reduced for brevity
+- mobile view and desktop views
 
 ### **DB**
 
@@ -84,6 +86,9 @@ To maintain flexibility and ease of development, the project is structured as a
 - to trigger a deploy to the prod url:
   - commit to main (not a habit to allow in the real world)
   - create a PR and merge it
+- responsive styles to allow for full UX on a mobile phone and a full size
+  monitor
+- login form errors are ugly
 
 ### **DX**
 
