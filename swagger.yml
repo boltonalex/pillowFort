@@ -1,0 +1,229 @@
+openapi: 3.0.0
+info:
+  title: PillowFort API
+  description: API documentation for user authentication, funds, investments, and KYC management in PillowFort.
+  version: 1.0.0
+
+paths:
+  /users/{userId}:
+    get:
+      summary: Retrieve user data or create a new user if not found
+      description: Fetches user details by `userId`. If the user does not exist, it creates a new user record.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The ID of the user to retrieve or create.
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Successfully retrieved user data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  address:
+                    type: string
+                    nullable: true
+                  dob:
+                    type: string
+                    format: date
+                    nullable: true
+                  email:
+                    type: string
+                    format: email
+                    nullable: true
+                  name:
+                    type: string
+                    nullable: true
+                  idUploaded:
+                    type: boolean
+                  kycVerified:
+                    type: boolean
+        "201":
+          description: User was not found and a new user was created
+        "500":
+          description: Internal server error
+
+  /funds:
+    get:
+      summary: Retrieve a list of available funds
+      description: Fetches all funds stored in Firestore. Returns a `404` if no funds are found.
+      responses:
+        "200":
+          description: Successfully retrieved the list of funds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  funds:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        description:
+                          type: string
+                          nullable: true
+                        createdAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+        "404":
+          description: No funds found
+        "500":
+          description: Internal server error
+
+  /investments:
+    post:
+      summary: Record a new investment
+      description: Allows an authenticated user to invest in a specific fund.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fundId:
+                  type: string
+                  description: The ID of the fund to invest in.
+                amount:
+                  type: number
+                  description: The amount to invest.
+      responses:
+        "201":
+          description: Investment successfully recorded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  investmentId:
+                    type: string
+                  userId:
+                    type: string
+                  fundId:
+                    type: string
+                  amount:
+                    type: number
+        "400":
+          description: Missing required fields
+        "500":
+          description: Internal server error
+
+  /investments/{userId}:
+    get:
+      summary: Retrieve all investments for a user
+      description: Fetches all investments made by a specific user.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The ID of the user whose investments to fetch.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully retrieved the list of investments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    userId:
+                      type: string
+                    fundId:
+                      type: string
+                    amount:
+                      type: number
+                    createdAt:
+                      type: string
+                      format: date-time
+        "500":
+          description: Internal server error
+
+  /kyc/{userId}:
+    post:
+      summary: Submit KYC (Know Your Customer) information
+      description: Allows an authenticated user to submit KYC details and upload an ID file.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The ID of the user submitting KYC.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                dob:
+                  type: string
+                  format: date
+                postcode:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                idFile:
+                  type: string
+                  format: binary
+                  description: The ID document file to upload.
+      responses:
+        "200":
+          description: KYC submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  kycVerified:
+                    type: boolean
+        "400":
+          description: Missing required fields or file upload issue
+        "500":
+          description: Internal server error
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

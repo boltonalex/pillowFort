@@ -2,7 +2,6 @@ const functions = require("firebase-functions");
 const cors = require("cors");
 const express = require("express");
 
-const usersRouter = require("./users");
 const investmentsRouter = require("./investments");
 const fundsRouter = require("./funds");
 const kycRouter = require("./kyc");
@@ -17,7 +16,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/funds", fundsRouter);
-app.use("/users", usersRouter);
 app.use("/investments", investmentsRouter);
 app.use("/kyc", kycRouter);
 app.use("/auth", authRouter);
