@@ -5,7 +5,6 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 
 const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
 const investmentsRouter = require("./routes/investments");
 const fundsRouter = require("./routes/funds");
 const kycRouter = require("./routes/kyc");
@@ -42,7 +41,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/", indexRouter);
-app.use("/api/users", usersRouter);
 app.use("/api/investments", investmentsRouter);
 app.use("/api/funds", fundsRouter);
 app.use("/api/kyc", kycRouter);

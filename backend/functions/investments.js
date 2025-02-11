@@ -1,22 +1,19 @@
 const express = require("express");
 const { db } = require("./config/firebase");
-const authMiddleware = require("./middlewares/authMiddleware"); // Ensure auth middleware is imported
+const authMiddleware = require("./middlewares/authMiddleware");
 const router = express.Router();
 
-// Reference Firestore
 const investmentsCollection = db.collection("investments");
 
-// ✅ Apply authMiddleware before all protected routes
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { fundId, amount } = req.body;
-    const userId = req.user.uid; // ✅ req.user should now be defined
+    const userId = req.user.uid;
 
     if (!fundId || !amount) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Store investment in Firestore
     const newInvestment = await investmentsCollection.add({
       userId,
       fundId,
@@ -40,7 +37,7 @@ router.post("/", authMiddleware, async (req, res) => {
 
 router.get("/:userId", authMiddleware, async (req, res) => {
   try {
-    const { userId } = req.params; // Extract userId from the URL path
+    const { userId } = req.params;
     const snapshot = await investmentsCollection.where("userId", "==", userId).get();
     if (snapshot.empty) {
       return res.status(200).json([]);

@@ -116,7 +116,7 @@ describe('AvailableFunds Component', () => {
     expect(screen.getByText(/Green Energy Fund/i)).toBeTruthy();
   });
 
-  test('guest users see "Login to Invest"', () => {
+  test('guest users see "Login or Signup to Invest"', () => {
     // @ts-expect-error - Ignoring TypeScript error on this line
     vi.mocked(useAuth).mockReturnValue({ user: null, userData: {} });
 
@@ -126,7 +126,7 @@ describe('AvailableFunds Component', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getAllByText(/Login to Invest/i)).toHaveLength(2);
+    expect(screen.getAllByText(/Login or Signup to Invest/i)).toHaveLength(2);
   });
 
   test('KYC-verified users can see two "Invest" buttons', () => {
